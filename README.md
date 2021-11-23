@@ -16,7 +16,7 @@ Considere um sistema arbitrário , cujo estado de fase seja &epsilon;, e um mome
 
 ## Funcionamento
 
-A representação das equações envolvendo os kets no código seguem o padrão (Clique se estiver vendo pelo GitHub com um tema escuro. Há também o código em LaTeX comentado neste arquivo.):
+A representação das equações envolvendo os kets no código seguem o padrão (Clique se estiver vendo isto com um tema escuro. Há também o código em LaTeX comentado neste arquivo.):
 
 <!--
 $$
