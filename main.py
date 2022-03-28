@@ -1,6 +1,6 @@
 import operacoes
 import sympy as sp
-
+ 
 # | j1, j2, m1, m2 >, onde m = -j, -j+1, ..., 0 , ..., j-1, j
 
 # J = j1+j2, j1+(j2-1), ..., |j1-j2|
@@ -9,7 +9,14 @@ import sympy as sp
 # J(+) |k,j,m> = h sqrt(j(j+1) - m(m+1)) |k,j,m+1>
 
 # Recebe os momentos individuais
-j1, j2 = 1, 1
+j1, j2 = "2", "1"
+
+# Garante que um j seja semi inteiro quando for o caso
+j1 = sp.parse_expr(j1)
+j2 = sp.parse_expr(j2)
+
+# Printa os j que estão sendo considerados
+print('\n Cálculo dos coeficientes para j1={} e j2={} \n'.format(j1,j2))
 
 """ 
 Veja que j1 deve ser maior que j2.
@@ -23,20 +30,24 @@ if j2 > j1:
     j2 = aux
 
 # Calcula os m de cada partícula
-m1 = [i for i in range(-j1, j1+1)]
-m2 = [i for i in range(-j2, j2+1)]
+m1 = operacoes.calcula_possiveis_m(j1)
+m2 = operacoes.calcula_possiveis_m(j2)
 
 # Calcula os possíveis valores J do momento resultante
 J = [j1-val for val in m2]
+
+print(J)
 
 # Calcula os possíveis valores M do momento resultante
 M = list(set(J + [-i for i in J]))
 M.sort()
 
+print(M)
+
 # Conjunto completo de todas as equações
 conjunto = []
 
-# Armazena exclusivamento os coeficientes
+# Armazena exclusivamente os coeficientes
 coeficientes = []
 
 # | J=2, M=2 > = | j1=1, j2=1 ; m1=1, m2=1 >
@@ -46,6 +57,8 @@ salvo que o primeiro elemento de cada array possui
 armazenado o respectivo coeficiente.
 """
 
+# Verifica se 
+# tam = len(M) if len(M) % 2 == 0 else len(M) - 1
 tam = len(M) if len(M) % 2 == 0 else len(M) - 1
 
 for j in range(len(J)):

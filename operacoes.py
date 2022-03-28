@@ -1,5 +1,15 @@
 import sympy as sp
 
+def calcula_possiveis_m(j):
+    m = []
+    m_i = j
+
+    while m_i >= -j:
+        m.append(m_i)
+        m_i = m_i - 1
+
+    return m
+
 def eleva(ket, ket_somado=False):
     # Verifica se está somando o ket do lado esquerdo da igualdade
     if ket_somado:
