@@ -154,7 +154,7 @@ def muda_subespaco(eq):
     esse novo vetor com um dos vetores do subespaço superior em busca de uma
     dependêncian linear. Com isso, determinamos então os valores de alpha e beta.
     Sendo c1 e c2 os coeficientes do vetor conhecido do subespaço superior,
-    encontramos que beta = - (c1/c2) alpha e que alpha = c2/sqrt(c2^2 + c1^2).
+    encontramos que beta = - (c1/c2)*alpha e que alpha = c2/sqrt(c2^2 + c1^2).
     """
     alpha = c2/sp.sqrt(c2**2 + c1**2)
     beta = - (c1/c2) * alpha

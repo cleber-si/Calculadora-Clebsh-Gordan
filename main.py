@@ -9,7 +9,7 @@ import sympy as sp
 # J(+) |k,j,m> = h sqrt(j(j+1) - m(m+1)) |k,j,m+1>
 
 # Recebe os momentos individuais
-j1, j2 = "2", "1"
+j1, j2 = "1", "1"
 
 # Garante que um j seja semi inteiro quando for o caso
 j1 = sp.parse_expr(j1)
@@ -57,9 +57,16 @@ salvo que o primeiro elemento de cada array possui
 armazenado o respectivo coeficiente.
 """
 
-# Verifica se 
+# Verifica se a quantidade de valores possíveis para M (tamanho do array M)
 # tam = len(M) if len(M) % 2 == 0 else len(M) - 1
 tam = len(M) if len(M) % 2 == 0 else len(M) - 1
+
+# Em casos de soma de j's inteiro com semi-inteiro, também descontamos 1
+if type(j1) == sp.core.numbers.Half and type(j1) != type(j2):
+    tam -= 1
+if type(j2) == sp.core.numbers.Half and type(j2) != type(j1):
+    tam -= 1
+
 
 for j in range(len(J)):
     # Armazena todas as equações de um dado subespaço
