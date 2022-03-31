@@ -1,6 +1,6 @@
 import sympy as sp
 
-def calcula_possiveis_m(j):
+def calcula_possiveis_m_iniciais(j):
     m = []
     m_i = j
 
@@ -140,30 +140,49 @@ def j_mais(eq):
 
     return kets
 
-def muda_subespaco(eq):
-    eq_ref = eq[1]
+# Acha os ms possíveis de um estado na troca se subespaço
+def seleciona_ms(m1, m2, M):
+    ms = []
 
-    # Lê os coeficientes do lado direito da equação de referência
-    c1 = eq_ref[1][0][0]
-    c2 = eq_ref[1][1][0]
+    for i in range(len(m1)):
+        for j in range(len(m2)):
+            if m1[i]+m2[j] == M:
+                ms.append([m1[i], m2[j]])
 
-    """ 
-    Dado um novo vetor em um subespaço menor, seus coeficientes alpha e beta
-    devem ser tais que |alpha|^2 + |beta|^2 + ... = 1. Podemos convencionar que
-    alpha e beta são reais e também que alpha é positivo. Disso, comparamos
-    esse novo vetor com um dos vetores do subespaço superior em busca de uma
-    dependêncian linear. Com isso, determinamos então os valores de alpha e beta.
-    Sendo c1 e c2 os coeficientes do vetor conhecido do subespaço superior,
-    encontramos que beta = - (c1/c2)*alpha e que alpha = c2/sqrt(c2^2 + c1^2).
-    """
-    alpha = c2/sp.sqrt(c2**2 + c1**2)
-    beta = - (c1/c2) * alpha
+    return ms
 
-    eq_ref[0][1] -= 1
-    eq_ref[1][0][0] = alpha
-    eq_ref[1][1][0] = beta
+def muda_subespaco(eq1, eq2, cont):
+    # Primeira troca de subespaço
+    if cont == 0:
+        eq_ref = eq1[1]
 
-    return eq_ref
+        # Lê os coeficientes do lado direito da equação de referência
+        c1 = eq_ref[1][0][0]
+        c2 = eq_ref[1][1][0]
+
+        """ 
+        Dado um novo vetor em um subespaço menor, seus coeficientes alpha e beta
+        devem ser tais que |alpha|^2 + |beta|^2 + ... = 1. Podemos convencionar que
+        alpha e beta são reais e também que alpha é positivo. Disso, comparamos
+        esse novo vetor com um dos vetores do subespaço superior em busca de uma
+        dependêncian linear. Com isso, determinamos então os valores de alpha e beta.
+        Sendo c1 e c2 os coeficientes do vetor conhecido do subespaço superior,
+        encontramos que beta = - (c1/c2)*alpha e que alpha = c2/sqrt(c2^2 + c1^2).
+        """
+        alpha = c2/sp.sqrt(c2**2 + c1**2)
+        beta = - (c1/c2) * alpha
+
+        eq_ref[0][1] -= 1
+        eq_ref[1][0][0] = alpha
+        eq_ref[1][1][0] = beta
+
+        return eq_ref
+
+    # Segunda troca de subespaço
+    if cont == 1:
+        eq_ref1, eq_ref2 = eq1[1], eq2[1]
+
+
 
 """ 
 eq = [[1, 2, 0], [[sp.sqrt(6)/6, 1, 1, 1, -1], [sp.sqrt(6)/3, 1, 1, 0, 0], [sp.sqrt(6)/6, 1, 1, -1, 1]]]
