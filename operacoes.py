@@ -1,4 +1,5 @@
 import sympy as sp
+from sympy.solvers.solveset import linsolve
 
 def calcula_possiveis_m_iniciais(j):
     m = []
@@ -12,6 +13,9 @@ def calcula_possiveis_m_iniciais(j):
 
 def eleva(ket, ket_somado=False):
     # Verifica se está somando o ket do lado esquerdo da igualdade
+
+    #print(ket)
+
     if ket_somado:
         coef = ket[0]
         j = ket[1]
@@ -167,7 +171,7 @@ def muda_subespaco(eq1, eq2, cont):
         esse novo vetor com um dos vetores do subespaço superior em busca de uma
         dependêncian linear. Com isso, determinamos então os valores de alpha e beta.
         Sendo c1 e c2 os coeficientes do vetor conhecido do subespaço superior,
-        encontramos que beta = - (c1/c2)*alpha e que alpha = c2/sqrt(c2^2 + c1^2).
+        encontramos que beta = - (c1/c2)*alpha e que alpha = c2/sqrt(c2^2 + c1^2). 
         """
         alpha = c2/sp.sqrt(c2**2 + c1**2)
         beta = - (c1/c2) * alpha
@@ -178,9 +182,175 @@ def muda_subespaco(eq1, eq2, cont):
 
         return eq_ref
 
-    # Segunda troca de subespaço
-    if cont == 1:
-        eq_ref1, eq_ref2 = eq1[1], eq2[1]
+def muda_subespaco2(conj, j1, j2, m1, m2):
+    # Verifica qual em qual subespaço vai chegar
+    J = j1 + j2 - len(conj)
+    M = -J
+
+    #print('J = {}'.format(J))
+
+    # Possíves ms do novo subespaço
+    pms = seleciona_ms(m1, m2, M)
+
+    #print('pms = {}'.format(pms))
+
+    # O coeficiente do ket |J,J> no ket |j1, j2; m1=j1, m2=J-j1> é sempre escolhido para ser real e positivo
+    # Garante que a ordem dos pares em 'pms' siga a regra acima
+    condicao_m2 = J-j1
+    #print(pms)
+    #print('condicao_m2 = {} \n'.format(condicao_m2))
+
+    '''
+    posicao = pms.index([0, -J])
+
+    if posicao != 0:
+        novo_pms = [pms[posicao]]
+        for i in range(len(pms)-1):
+            condicao_nova = condicao_m2 + i+1
+            posicao_nova = pms.index([j1 - i-1, condicao_nova])
+            novo_pms.append(pms[posicao_nova])
+    else:
+        novo_pms = pms
+    '''
+
+
+    # Compara cada par [m1, m2] com os pares possíveis na troca de subespaço
+    comparacao = []
+
+    for i in range(len(conj)):
+        sub_comparacao = []
+        conj_ref = conj[i]
+
+        # Armazena todos pares [m1, m2] de cada equação de estado de um subespaço
+        lista = []
+        for i in range(len(conj_ref)):
+            sub_lista = []
+            for j in range(len(conj_ref[i][1])):
+                sub_lista.append(conj_ref[i][1][j][3:])
+            lista.append(sub_lista)
+
+        '''
+        Compara cada par [m1, m2] das equações do subespaço a que 'comparacao' se refere
+        com os pares armazenados em 'pms'. Para cada par que não esteja presente em 'pms',
+        a equação ganha um ponto. A equação escolhida para representar o novo subespaço vai ser
+        aquela que tiver 0 pontos, ou seja, a que só tiver pares correspondentes com 'pms'.
+        Vale ressaltar que o número de pares de uma equação é menor ou igual ao tamanho de 'pms'.
+        Em outras palavras, uma equação pode ter um número menor de termos do que todos os pares de
+        possíveis ms.
+        '''
+
+        for i in range(len(lista)):
+            sub_comparacao.append(0)
+            for j in range(len(lista[i])):
+                if not(lista[i][j] in pms):
+                    sub_comparacao[i] += 1
+
+        comparacao.append(sub_comparacao)
+
+    eqs_ref = []
+    indices = []
+    coefs = []
+
+    for i in range(len(comparacao)):
+        sub_coefs = []
+
+        indices.append(comparacao[i].index(0))
+
+        eqs_ref.append(conj[i][indices[i]])
+
+        # Preenche os estados com os termos que faltam.
+        #   Ex.: |1, 0> para j1 = j2 = 1 fica faltando o termo 0 * |j1, 2, 0, 0> = 0.
+
+        #print(pms)
+
+        '''Problema aqui!'''
+        if len(eqs_ref[i][1]) < len(pms):
+            for j in range(len(pms)):
+                if not pms[j] == eqs_ref[i][1][j][3:]:
+                    eqs_ref[i][1].insert(j, [0, j1, j2, pms[j][0], pms[j][1]]) 
+                    break
+
+        # eqs_ref[i-ésima eq][lado da igualdade]
+        #       eqs_ref[i-ésima eq][0][elemento do ket]
+        #       eqs_ref[i-ésima eq][1][j-ésimo termo][elemento do ket]
+
+
+        # sub_coefs[coeficiente][número do subespaço][par de ms correspendente]
+        for j in range(len(eqs_ref[i][1])):
+            sub_coefs.append([eqs_ref[i][1][j][0], eqs_ref[i][0][1], eqs_ref[i][1][j][3:]])
+
+        coefs.append(sub_coefs)
+
+    #print('referencia 1: \n {}'.format(eqs_ref))
+
+    #print('\n')
+
+    # Define os coeficientes do sistema da troca de base a seren determinados (equivalentes a c1, c2, ..., cn)
+    a, b, c, d, e, f = sp.symbols('a, b, c, d, e, f')
+
+    num_variaveis = 6
+
+    # Cria a matriz preliminar que representa o sistema
+    linhas = []
+    for i in range(num_variaveis-1):
+        linhas.append([0]*(num_variaveis+1))
+
+    for i in range(len(pms)-1):
+        for j in range(len(pms)):
+            linhas[i][j] = coefs[i][j][0]
+            #pass
+
+    #print(linhas)
+
+    # Cria a matriz SymPy que representa o sistema
+    Matriz = sp.Matrix(linhas)
+
+    # Cria o sistema com base na matriz 'Matriz'
+    system = A, x = Matriz[:, :-1], Matriz[:, -1]
+
+    # Resolve o sistema
+    r = linsolve(system, a, b, c, d, e, f)
+
+    #print(r)
+
+    '''
+    A equação de normalização é do tipo |a1|^2 + |a2|^2 + ... + |an|^2 = 1. Podemos subtrair 1 de
+    ambos os lados da equação e com isso surge um termo -1 no lado esquerdo da igualdade. Na forma como
+    estou desenvolvendo aqui, estou usando de funções do SymPy que consideram sempre o lado
+    direito da igualdade como 0, por isso essa pequena manipulação na equação. Isso também explica
+    o motivo de inicializar a 'eq_normalizacao' com o valor -1.
+    '''
+    eq_normalizacao = -1
+    for i in range(len(pms)):
+        eq_normalizacao += r.args[0][i]**2
+
+    #print(eq_normalizacao)
+    #print(r)
+    #print(r.args[0][0])
+
+    # Analisa o sinal do primeiro termo da solução
+    sinal = str(r.args[0][0])
+    correcao = -1 if sinal[0] == '-' else 1
+    #print('Valor de sinal[0] = {}'.format(sinal[0]))
+    #print('Valor de correcao = {}'.format(correcao))
+    #print(r.args[0][len(pms)-1])
+
+    # Resolve a equação de normalização com base na solução do sistema
+    s = sp.solve(eq_normalizacao, r.args[0][0]*correcao)
+    #print('Valor de s = {}'.format(s))
+
+    # Seleciona apenas o coeficiente positivo
+    coef = max(s)
+    
+    # Calcula os coeficientes de Clabsh-Gordan e monta o ket da nova base
+    CG = []
+    novo_ket = [[1, J, M], []]
+
+    for i in range(len(pms)):
+        CG.append(r.args[0][i]/r.args[0][0] * coef)
+        novo_ket[1].append([CG[i], j1, j2, pms[i][0], pms[i][1]])
+        
+    return novo_ket
 
 
 

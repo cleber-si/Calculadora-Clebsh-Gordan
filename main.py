@@ -9,7 +9,7 @@ import sympy as sp
 # J(+) |k,j,m> = h sqrt(j(j+1) - m(m+1)) |k,j,m+1>
 
 # Recebe os momentos individuais
-j1, j2 = "1", "1"
+j1, j2 = "2", "2"
 
 # Garante que um j seja semi inteiro quando for o caso
 j1 = sp.parse_expr(j1)
@@ -30,19 +30,19 @@ if j2 > j1:
     j2 = aux
 
 # Calcula os m de cada partícula
-m1 = operacoes.calcula_possiveis_m(j1)
-m2 = operacoes.calcula_possiveis_m(j2)
+m1 = operacoes.calcula_possiveis_m_iniciais(j1)
+m2 = operacoes.calcula_possiveis_m_iniciais(j2)
 
 # Calcula os possíveis valores J do momento resultante
 J = [j1-val for val in m2]
 
-print(J)
+#print(J)
 
 # Calcula os possíveis valores M do momento resultante
 M = list(set(J + [-i for i in J]))
 M.sort()
 
-print(M)
+#print(M)
 
 # Conjunto completo de todas as equações
 conjunto = []
@@ -67,7 +67,7 @@ if type(j1) == sp.core.numbers.Half and type(j1) != type(j2):
 if type(j2) == sp.core.numbers.Half and type(j2) != type(j1):
     tam -= 1
 
-
+ 
 for j in range(len(J)):
     # Armazena todas as equações de um dado subespaço
     equacoes = []
@@ -76,7 +76,8 @@ for j in range(len(J)):
         equacoes.append([[1, max(J), min(M)],
                         [[1, j1, j2, min(m1), min(m2)]]])
     else:
-        equacoes.append(operacoes.muda_subespaco(conjunto[j-1]))
+        equacoes.append(operacoes.muda_subespaco2(conjunto, j1, j2, m1, m2))
+
         if conjunto[j-1][0][0][1] == 1:
             #print('conjunto[j-1][0][1] == 1')
             print(equacoes[0])
