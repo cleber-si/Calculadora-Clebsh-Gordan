@@ -225,7 +225,7 @@ def muda_subespaco(conj, j1, j2, m1, m2):
     system = A, x = Matriz[:, :-1], Matriz[:, -1]
 
     # Resolve o sistema
-    r = linsolve(system, a, b, c, d, e, f)
+    r = linsolve(system, a, b, c, d, e, f, g)
 
     '''
     A equação de normalização é do tipo |a1|^2 + |a2|^2 + ... + |an|^2 = 1. Podemos subtrair 1 de
