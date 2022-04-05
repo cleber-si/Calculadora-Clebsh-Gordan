@@ -10,9 +10,35 @@
 
 Os coeficientes de Clecsh-Gordan aparecem quando vamos fazer a soma de momenta (palavra que usarei para o plural de "momento angular") na mecânica quântica.
 
-Considere um sistema arbitrário , cujo estado de fase seja &epsilon;, e um momento angular **J** relativo a esse sistema.
+Considere um sistema arbitrário, cujo estado de fase seja &epsilon;, e um momento angular **J** relativo a esse sistema, em que **J = j1 + j2**. É sempre possível construir uma base padrão {|k, j, m>} composta  por autovetores comuns a **J**² e Jz:
+$$
+\bold{J}^2 |k, j, m\rangle = j(j+1)\hbar^2|k, j, m\rangle \\
+J_z |k, j, m\rangle = m \hbar |k, j, m\rangle
+$$
+de tal forma que a ação de operadores J+ e J- obedeça a relação
+$$
+J_{\pm} |k, j, m\rangle = \hbar \sqrt{j(j+1) - m(m \pm 1)} |k, j, m\rangle
+$$
+Denotamos por &epsilon;(k, j) o espaço vetorial gerado pelo conjunto de bases padao que corresponde a valores fixos de k e j. Existem (2j+1) desses vetores e eles podem ser transformados em qualquer ordem por **J**², Jz, J+ e J-. O estado de espaço pode ser considerado como sendo uma soma direta de subespaços ortogonais &epsilon;(k, j).
 
-[...] 	Explicação breve da teoria de soma de momenta. (Colocarei em breve, prometo!)	 [...]
+Assumamos então que uma base padrão {|k1, j1, m1>} seja conhecida no estado de espaço  &epsilon;1, composta de autovetores de **j1**² e j1z, onde **J1** é o operador momento angular do substema 1:
+$$
+\bold{J_1}^2 |k_1, j_1, m_1\rangle = j_1(j_1+1)\hbar^2|k_1, j_1, m_1\rangle \\
+J_{1z} |k_1, j_1, m_1\rangle = m_1 \hbar |k_1, j_1, m_1\rangle \\ 
+J_{1\pm} |k_1, j_1, m_1\rangle = \hbar \sqrt{j_1(j_1+1) - m_1(m_1 \pm 1)} |k_1, j_1, m_1\rangle
+$$
+Façamos o mesmo para uma outra base {|k2, j2, m2>}:
+$$
+\bold{J_2}^2 |k_2, j_2, m_2\rangle = j_2(j_2+1)\hbar^2|k_2, j_2, m_2\rangle \\
+J_{2z} |k_2, j_2, m_2\rangle = m_2 \hbar |k_2, j_2, m_2\rangle \\ 
+J_{2\pm} |k_2, j_2, m_2\rangle = \hbar \sqrt{j_2(j_2+1) - m_2(m_2 \pm 1)} |k_2, j_2, m_2\rangle
+$$
+
+$$
+\otimes
+$$
+
+[...] 	Explicação breve da teoria de soma de momenta em desenvolvimento!	 [...]
 
 ## Funcionamento
 
@@ -42,11 +68,11 @@ Em palavras, cada equação é representada por um array de tamanho 2 (chamarei 
 
 A ideia do código é que você simplesmente entre com os valores de  **j1** e **j2** e já veja todas as equações geradas por essa combinação de partículas, com os seus respectivos coeficientes.
 
-## Principais Problemas (já sendo corrigidos)
+## Limitações
 
-* O código ainda não está bem organizado nem completamente comentado.
-* Na troca de subespaços temos que resolver um sistema de equações. Essa implemetação só foi feita nos casos em que nos deparamos com um sistema de duas equações e duas incógnitas. Logo,  por hora o programa retorna resultados errados ou incompletos em casos onde a troca de subespaços envolve um sistema de ordem maior que 2.
-* O programa ainda não suporta a soma de momenta com pelo menos um dos **j** sendo semi-inteiro (um elétron com spin 1/2, por exemplo). Por hora, apenas é possível somar partículas com momento angular inteiro.
+Na troca de subespaços temos que resolver um sistema de equações, que dizem respeito às condições de ortogonalidade no estado procurado no novo subestado com estados de outros subespaços. O tamanho desse sistema está diretamente relacionado com a quantidade  **k** de possíveis valores que **J** pode assumir. O sistema terá **k** variáveis e **k-1** equações. Isso resulta em um grau de liberdade, mas a equação de normalização do estado resultante do novo subespaço elimina esse grau de liberdade e nos retorna um valor usado na construção dos coeficientes do Clebsh-Gordan.
+
+O número máximo para o tamanho desse sistema é **k = 7**. Ou seja, o algoritmo só vai retornar soluções completas quando **J** puder assumir até sete valores distintos. Um exemplo disso é o caso **j1 = j2 = 3**, onde **J = 6, 5, 4, 3, 2, 1, 0**. No caso onde **J** possa assumir mais valores, o código irá retornar apenas todos os estados dos primeiros sete subespaços superiores. 
 
 ## Implementações Futuras (algumas já em andamento)
 

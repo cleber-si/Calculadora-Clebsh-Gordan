@@ -37,6 +37,8 @@ def calcula(j1, j2):
     J = [j1-val for val in m2]
     J.sort(reverse=True)
 
+    #print(J, '\n')
+
     # Conjunto completo de todas as equações
     conjunto = []
 

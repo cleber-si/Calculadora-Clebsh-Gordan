@@ -201,7 +201,15 @@ def muda_subespaco(conj, j1, j2, m1, m2):
         coefs.append(sub_coefs)
 
 
-    # Define os coeficientes do sistema da troca de base a seren determinados (equivalentes a c1, c2, ..., cn)
+    # Verifica se os elementos de 'coefs' estão coerentes em relação ao tamanho
+    for i in range(len(coefs)):
+        if len(coefs[i]) < len(pms):
+            for j in range(len(pms)):
+                if not pms[j] == coefs[i][j][2]:
+                    coefs[i].insert(j, [0, j1, j2, pms[j][0], pms[j][1]]) 
+                    break
+
+    # Define os coeficientes do sistema da troca de base a serem determinados (equivalentes a c1, c2, ..., cn)
     a, b, c, d, e, f, g = sp.symbols('a, b, c, d, e, f, g')
     variaveis = [a, b, c, d, e, f, g]
     num_variaveis = len(variaveis)
@@ -211,7 +219,9 @@ def muda_subespaco(conj, j1, j2, m1, m2):
     linhas = []
     for i in range(num_variaveis-1):
         linhas.append([0]*(num_variaveis+1))
+        
 
+    # Preenche a matriz com os coeficientes
     for i in range(len(pms)-1):
         for j in range(len(pms)):
             linhas[i][j] = coefs[i][j][0]
