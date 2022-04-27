@@ -1,6 +1,42 @@
 import sympy as sp
 from sympy.solvers.solveset import linsolve
 
+def printa_latex(eq):
+    # Lê J e M no lado esquerdo da equação
+    J_lt = eq[0][1]
+    M_lt = eq[0][2]
+
+    # Monta o código em LaTeX para o lado esquerdo da equação
+    lado_esquerdo = '|' + sp.latex(J_lt) + ';' + sp.latex(M_lt) + '\\rangle' + '='
+
+    # Inicializa a string de todos os termos da equação
+    termos = lado_esquerdo
+
+    # Conta quantos termos existem no lado direito da equação
+    n_termos = len(eq[1])
+
+    # Cria o código LaTeX para cada termo do lado direito da equação e soma com os anteriores
+    for i in range(n_termos):
+        CS = eq[1][i][0]
+        j1 = eq[1][i][1]
+        m1 = eq[1][i][2]
+        j2 = eq[1][i][3]
+        m2 = eq[1][i][4]
+
+        termo = sp.latex(CS) + '|' + sp.latex(j1) + ',' + sp.latex(m1) + ';' + sp.latex(j2) + ',' + sp.latex(m2) + '\\rangle'
+
+        # Faz a regulagem dos sinais dos coeficientes
+        if i == 0:
+            termos += termo
+        else:
+            if CS < 0:
+                termos += termo
+            else:
+                termos += '+' + termo
+
+    return termos
+    
+
 def calcula_possiveis_m_iniciais(j):
     m = []
     m_i = j

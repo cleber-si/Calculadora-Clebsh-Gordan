@@ -1,5 +1,7 @@
 import operacoes
 import sympy as sp
+
+from IPython.display import display, Math
  
 # | j1, j2, m1, m2 >, onde m = -j, -j+1, ..., 0 , ..., j-1, j
 
@@ -8,7 +10,7 @@ import sympy as sp
 # J(-) |k,j,m> = h sqrt(j(j+1) - m(m-1)) |k,j,m-1>
 # J(+) |k,j,m> = h sqrt(j(j+1) - m(m+1)) |k,j,m+1>
 
-def calcula(j1, j2):
+def calcula(j1, j2, latex=False):
     limite_subespacos = 7
 
     # Garante que um j seja semi inteiro quando for o caso
@@ -16,7 +18,12 @@ def calcula(j1, j2):
     j2 = sp.parse_expr(j2)
 
     # Printa os j que estão sendo considerados
-    print('\n Cálculo dos coeficientes para j1={} e j2={} \n'.format(j1,j2))
+    if latex:
+        print('\n')
+        texto = 'Cálculo dos autoestados para '
+        display(Math(sp.latex(texto) + 'j_{1}' + '=' + sp.latex(j1) + sp.latex(' e ') + 'j_{2}' + '=' + sp.latex(j2) + sp.latex(':')))
+    else:
+        print('\n Cálculo dos coeficientes para j1={} e j2={} \n'.format(j1,j2))
 
     """ 
     Veja que j1 deve ser maior que j2.
@@ -61,6 +68,13 @@ def calcula(j1, j2):
         aviso = True
 
     for j in range(tam_J):
+        # Printa o subespaço que está sendo considerado
+        if latex:
+            texto = 'Subespaço '
+            display(Math(sp.latex(texto) + '\\varepsilon' + sp.latex('(J') + '=' + sp.latex(J[j]) + sp.latex(')')))
+        else:
+            print('Subespaço E(J = {})'.format(J[j]))
+
         # Calcula os possíveis valores M do momento resultante
         M = operacoes.calcula_possiveis_m_iniciais(J[j])
         tam = len(M)
@@ -81,17 +95,26 @@ def calcula(j1, j2):
             equacoes.append(operacoes.muda_subespaco(conjunto, j1, j2, m1, m2))
 
             if conjunto[j-1][0][0][1] == 1:
-                print(equacoes[0])
+                if latex:
+                    display(Math(operacoes.printa_latex(equacoes[0])))
+                else:
+                    print(equacoes[0])
                 conjunto.append(equacoes)
                 break
 
         for i in range(tam):
-            print(equacoes[i])
+            if latex:
+                display(Math(operacoes.printa_latex(equacoes[i])))
+            else:
+                print(equacoes[i])
             equacoes.append(operacoes.j_mais(equacoes[i]))
         
         # Garante que a última equação não nula do subespaço seja impressa
         if equacoes[i][0][2]/equacoes[0][0][2] != -1:
-            print(equacoes[i+1])
+            if latex:
+                display(Math(operacoes.printa_latex(equacoes[i+1])))
+            else:
+                print(equacoes[i+1])
         
         print('')
 
