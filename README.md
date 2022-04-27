@@ -145,6 +145,7 @@ Após encontrar todos os possíveis autoestados de um subespaço, devemos trocar
 Para mais detalhes e formalismo acerca da teoria sobre momento angular e sobre a soma de momento angular em mecânica quântica, recomendo o estudo desses tópicos em livros como a coletânia [*Quantum Mechanics*](https://www.google.com.br/books/edition/Quantum_Mechanics_Volume_1/tVI_EAAAQBAJ?hl=pt-BR&gbpv=0) , de Cohen-Tannoudji, [*Modern Quantum Mechanics*](https://www.google.com.br/books/edition/Modern_Quantum_Mechanics/010yDwAAQBAJ?hl=pt-BR&gbpv=1&dq=sakurai&printsec=frontcover), de Sakurai & Napolitano, dentre outros.
 
 ## Funcionamento
+No arquivo [principal.ipybn](https://github.com/cleber-si/Calculadora-Clebsh-Gordan/blob/main/principal.ipynb) há uma variável boleana *'latex'* onde é possível fazer com que o programa retorne os resultados no formato de equações analíticas se seu valor for **True**. Esse valor só deve ser atribuído se o código for rodado em algum notebook como o Jupyter, Visual Studio, PyCharm, Google Colab, etc. Caso o valor seja **False**, o programa mostrará as equações representadas na forma de array como a convenção abaixo.
 
 A representação das equações envolvendo os kets no código seguem o padrão (Clique se estiver vendo isto com um tema escuro. Há também o código em LaTeX comentado neste arquivo.):
 
@@ -180,7 +181,7 @@ O número máximo para o tamanho desse sistema é **k = 7**. Ou seja, o algoritm
 
 ## Implementações Futuras (algumas já em andamento)
 
-* Interface gráfica;
+* Interface gráfica mais robusta para não depender de notebooks ou terminais;
 * Dados **J**, **M**, **j1**, **j2**, **m1** e **m2**, o programa retornará o coeficiente de *Clebsh-Gordan* específico para essa configuração.
 
 ----
